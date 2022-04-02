@@ -14,8 +14,15 @@ const getUserPosts = async (username) => {
 };
 
 const getDiscoveryPosts = async (limit, offset) => {
-  const posts = await Post.find({}).skip(offset).limit(limit).sort({ createdAt: -1});
+  const posts = await Post.find({})
+    .skip(offset)
+    .limit(limit)
+    .sort({ createdAt: -1 });
   return posts;
 };
 
-module.exports = { uploadPost, getUserPosts, getDiscoveryPosts };
+const commentOnPost = async (photoID, comment) => {
+  await Post.findByIdAndUpdate(photoID, { $push: { comments: comment } });
+};
+
+module.exports = { uploadPost, getUserPosts, getDiscoveryPosts, commentOnPost };

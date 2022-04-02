@@ -4,11 +4,12 @@ const router = express.Router();
 const {
   uploadPost,
   getDiscoveryPosts,
+  commentOnPost,
 } = require("../../database/controllers/Post");
 
 //POST REQUESTS
 
-//body must be in form {username, location, url} -- returns username
+//body must be in form {username, location, url, caption} -- returns username
 router.post("/uploadPost", async (req, res) => {
   try {
     const newPost = await uploadPost(req.body);
@@ -24,6 +25,17 @@ router.get("/discover", async (req, res) => {
   try {
     const discoverFeed = await getDiscoveryPosts(+limit, +offset);
     res.send(discoverFeed);
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+//input must be in form {postID, comment} -- returns username
+router.post("/comment", async (req, res) => {
+  try {
+    const { postID, comment } = req.body;
+    await commentOnPost(postID, comment);
+    res.send('comment successfully inserted');
   } catch (err) {
     res.send(err);
   }

@@ -5,11 +5,13 @@ const postSchema = new mongoose.Schema(
     username: { type: String, required: true, index: true },
     location: String,
     url: String,
+    caption: String,
     createdAt: {
       type: Date,
       default: Date.now,
       expires: 24*60*60
-    }
+    },
+    comments: []
   },
 );
 

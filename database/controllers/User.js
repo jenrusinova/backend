@@ -16,9 +16,13 @@ const getUser = async (username) => {
 };
 
 const followUser = async (username, followedUser) => {
-  const res = await User.updateOne(
+  await User.updateOne(
     { username },
     { $addToSet: { following: followedUser } }
+  );
+  await User.updateOne(
+    { username: followedUser },
+    { $addToSet: { followers: username } }
   );
 };
 
