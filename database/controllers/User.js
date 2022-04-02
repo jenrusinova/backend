@@ -26,15 +26,4 @@ const followUser = async (username, followedUser) => {
   );
 };
 
-const getFollowing = async (username) => {
-  const followingList = await User.findOne({ username }).select('following -_id');
-  return followingList;
-};
-
-//can implement later
-//changeUsername(userID)
-//update username of user
-//map through everyone in user's followers array
-//update each user's following array (the entry containing the userID)
-
-module.exports = { addNewUser, getUser, followUser, getFollowing };
+module.exports = { addNewUser, getUser, followUser };

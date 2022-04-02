@@ -5,7 +5,6 @@ const {
   addNewUser,
   getUser,
   followUser,
-  getFollowing,
 } = require("../../database/controllers/User");
 
 //GET REQUESTS
@@ -16,16 +15,6 @@ router.get("/getUser/:username", async (req, res) => {
   try {
     const { userInfo, posts } = await getUser(username);
     res.send({ userInfo, posts });
-  } catch (err) {
-    res.send(err);
-  }
-});
-
-router.get("/getFollowing/:username", async (req, res) => {
-  const { username } = req.params;
-  try {
-    const following = await getFollowing(username);
-    res.send(following);
   } catch (err) {
     res.send(err);
   }
