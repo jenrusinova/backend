@@ -22,7 +22,7 @@ router.get("/getUser/:username", async (req, res) => {
 
 //POST REQUESTS
 
-//input must be in form {username, password, profPhoto} -- returns username
+//input must be in form {username, profPhoto} -- returns username
 router.post("/addNewUser", async (req, res) => {
   try {
     const newUser = await addNewUser(req.body);
