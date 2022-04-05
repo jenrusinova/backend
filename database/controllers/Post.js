@@ -21,8 +21,10 @@ const getDiscoveryPosts = async (limit, offset) => {
   return posts;
 };
 
-const commentOnPost = async (photoID, comment) => {
-  await Post.findByIdAndUpdate(photoID, { $push: { comments: comment } });
+const commentOnPost = async (photoID, username, comment) => {
+  await Post.findByIdAndUpdate(photoID, {
+    $push: { comments: { username, comment } },
+  });
 };
 
 module.exports = { uploadPost, getUserPosts, getDiscoveryPosts, commentOnPost };
