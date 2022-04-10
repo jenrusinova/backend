@@ -22,7 +22,7 @@ router.get("/discover", async (req, res) => {
 
 //POST REQUESTS
 
-//body must be in form {username, location, url, caption} -- returns username
+//body must be in form {username, profPhoto, location, url, caption} -- returns username
 router.post("/uploadPost", async (req, res) => {
   try {
     const newPost = await uploadPost(req.body);
@@ -32,12 +32,12 @@ router.post("/uploadPost", async (req, res) => {
   }
 });
 
-//input must be in form {postID, comment} -- returns username
+//input must be in form {postID, username, comment} -- returns username
 router.post("/comment", async (req, res) => {
   try {
-    const { postID, comment } = req.body;
-    await commentOnPost(postID, comment);
-    res.send('comment successfully inserted');
+    const { postID, username, comment } = req.body;
+    await commentOnPost(postID, username, comment);
+    res.send("comment successfully inserted");
   } catch (err) {
     res.send(err);
   }

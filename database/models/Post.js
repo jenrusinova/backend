@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema(
   {
     username: { type: String, required: true, index: true },
+    profPhoto: String,
     location: String,
     url: String,
     caption: String,
