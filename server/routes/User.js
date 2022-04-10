@@ -34,18 +34,28 @@ router.get("/getUserMeta/:username", async (req, res) => {
 
 //input must be in form {username, email, password} -- returns username
 router.post("/addNewUser", async (req, res) => {
-  res.send(req.body);
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-  // try {
-  //   const newUser = await addNewUser(req.body);
-  //   res.send(newUser.username);
-  // } catch (err) {
-  //   if (err.code === 11000) {
-  //     res.send("already a user");
+  // compare input pw to hashed pw
+  // const password = await bcrypt.compare(req.body.password, hashedPassword, (err, hash) => {
+  //   if (err) {
+  //     console.log('ERR ', err);
   //   } else {
-  //     res.send(err);
+  //     console.log('RES ', hash);
   //   }
-  // }
+  // })
+
+  try {
+    const newUser = await addNewUser(req.body);
+    res.send(newUser.username);
+  } catch (err) {
+    if (err.code === 11000) {
+      res.send("already a user");
+    } else {
+      res.send(err);
+    }
+  }
 });
 
 //input must be in form {username, userProfPic, followedUser, followedProfPic} -- returns username
