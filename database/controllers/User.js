@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const mongoose = require("mongoose");
 const { getUserPosts } = require("./Post");
 
 //possibly add .lean() in the future
@@ -11,7 +12,9 @@ const addNewUser = async (userData) => {
 };
 
 const getUser = async (username) => {
-  const userInfo = await User.findOne({ username }).exec();
+  const userInfo = await User.findOne({ username })
+    .populate("following", "username profPhoto")
+    .exec();
   const posts = await getUserPosts(username);
   return { userInfo, posts };
 };
@@ -21,20 +24,30 @@ const getUserMeta = async (username) => {
   return userInfo;
 };
 
-const followUser = async (
-  username,
-  userProfPic,
-  followedUser,
-  followedProfPic
-) => {
-  await User.updateOne(
+const changeProfilePhoto = async ({ username, profPhoto }) => {
+  const user = await User.findOneAndUpdate(
     { username },
-    { $addToSet: { following: { followedUser, followedProfPic } } }
+    { profPhoto },
+    {
+      new: true,
+    }
   );
-  await User.updateOne(
-    { username: followedUser },
-    { $addToSet: { followers: { username, userProfPic } } }
-  );
+  return user;
 };
 
-module.exports = { addNewUser, getUser, followUser, getUserMeta };
+const followUser = async (currentUserID, otherID) => {
+  await User.findByIdAndUpdate(currentUserID, {
+    $addToSet: { following: mongoose.Types.ObjectId(otherID) },
+  });
+  await User.findByIdAndUpdate(otherID, {
+    $addToSet: { followers: mongoose.Types.ObjectId(currentUserID) },
+  });
+};
+
+module.exports = {
+  addNewUser,
+  getUser,
+  followUser,
+  getUserMeta,
+  changeProfilePhoto,
+};
