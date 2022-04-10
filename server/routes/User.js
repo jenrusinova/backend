@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcryptjs");
 const router = express.Router();
 
 const {
@@ -31,18 +32,20 @@ router.get("/getUserMeta/:username", async (req, res) => {
 
 //POST REQUESTS
 
-//input must be in form {username, profPhoto} -- returns username
+//input must be in form {username, email, password} -- returns username
 router.post("/addNewUser", async (req, res) => {
-  try {
-    const newUser = await addNewUser(req.body);
-    res.send(newUser.username);
-  } catch (err) {
-    if (err.code === 11000) {
-      res.send("already a user");
-    } else {
-      res.send(err);
-    }
-  }
+  res.send(req.body);
+
+  // try {
+  //   const newUser = await addNewUser(req.body);
+  //   res.send(newUser.username);
+  // } catch (err) {
+  //   if (err.code === 11000) {
+  //     res.send("already a user");
+  //   } else {
+  //     res.send(err);
+  //   }
+  // }
 });
 
 //input must be in form {username, userProfPic, followedUser, followedProfPic} -- returns username
