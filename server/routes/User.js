@@ -5,16 +5,25 @@ const {
   addNewUser,
   getUser,
   followUser,
+  getUserMeta,
 } = require("../../database/controllers/User");
 
 //GET REQUESTS
 
 //request parameteer must include username --- returns userInfo (user metadata and posts)
 router.get("/getUser/:username", async (req, res) => {
-  const { username } = req.params;
   try {
-    const { userInfo, posts } = await getUser(username);
+    const { userInfo, posts } = await getUser(req.params.username.toLowerCase());
     res.send({ userInfo, posts });
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+router.get("/getUserMeta/:username", async (req, res) => {
+  try {
+    const { username, profPhoto } = await getUserMeta(req.params.username.toLowerCase());
+    res.send({ username, profPhoto });
   } catch (err) {
     res.send(err);
   }
@@ -36,11 +45,11 @@ router.post("/addNewUser", async (req, res) => {
   }
 });
 
-//input must be in form {username, followedUser} -- returns username
+//input must be in form {username, userProfPic, followedUser, followedProfPic} -- returns username
 router.post("/followUser", async (req, res) => {
   try {
-    const { username, followedUser } = req.body;
-    await followUser(username, followedUser);
+    const { username, userProfPic, followedUser, followedProfPic } = req.body;
+    await followUser(username, userProfPic, followedUser, followedProfPic);
     res.send("succesfully followed");
   } catch (err) {
     res.send(err);
