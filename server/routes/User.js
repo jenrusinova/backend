@@ -7,6 +7,7 @@ const {
   getUser,
   followUser,
   getUserMeta,
+  changeProfilePhoto,
 } = require("../../database/controllers/User");
 
 //GET REQUESTS
@@ -14,7 +15,9 @@ const {
 //request parameteer must include username --- returns userInfo (user metadata and posts)
 router.get("/getUser/:username", async (req, res) => {
   try {
-    const { userInfo, posts } = await getUser(req.params.username.toLowerCase());
+    const { userInfo, posts } = await getUser(
+      req.params.username.toLowerCase()
+    );
     res.send({ userInfo, posts });
   } catch (err) {
     res.send(err);
@@ -23,7 +26,9 @@ router.get("/getUser/:username", async (req, res) => {
 
 router.get("/getUserMeta/:username", async (req, res) => {
   try {
-    const { username, profPhoto } = await getUserMeta(req.params.username.toLowerCase());
+    const { username, profPhoto } = await getUserMeta(
+      req.params.username.toLowerCase()
+    );
     res.send({ username, profPhoto });
   } catch (err) {
     res.send(err);
@@ -64,12 +69,20 @@ router.post("/addNewUser", async (req, res) => {
   // })
 });
 
-//input must be in form {username, userProfPic, followedUser, followedProfPic} -- returns username
 router.post("/followUser", async (req, res) => {
   try {
-    const { username, userProfPic, followedUser, followedProfPic } = req.body;
-    await followUser(username, userProfPic, followedUser, followedProfPic);
+    const { currentUserID, otherID } = req.body;
+    await followUser(currentUserID, otherID);
     res.send("succesfully followed");
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+router.post("/profPhoto", async (req, res) => {
+  try {
+    const user = await changeProfilePhoto(req.body)
+    res.send(user);
   } catch (err) {
     res.send(err);
   }

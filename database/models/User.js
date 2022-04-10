@@ -5,8 +5,9 @@ const userSchema = new mongoose.Schema({
   email: {type: String, required: true},
   password: {type: String, required: true},
   profPhoto: String,
-  following: [],
+  following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
   followers: [],
 });
 
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+module.exports = User;
