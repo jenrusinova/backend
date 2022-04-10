@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcryptjs");
 const router = express.Router();
 
 const {
@@ -36,10 +37,19 @@ router.get("/getUserMeta/:username", async (req, res) => {
 
 //POST REQUESTS
 
-//input must be in form {username, profPhoto} -- returns username
+//input must be in form {username, email, password} -- returns username
 router.post("/addNewUser", async (req, res) => {
+  const body = req.body;
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(body.password, salt);
+  const user = {
+    username: body.username,
+    email: body.email,
+    password: hashedPassword
+  };
+
   try {
-    const newUser = await addNewUser(req.body);
+    const newUser = await addNewUser(user);
     res.send(newUser.username);
   } catch (err) {
     if (err.code === 11000) {
@@ -48,6 +58,15 @@ router.post("/addNewUser", async (req, res) => {
       res.send(err);
     }
   }
+
+  // compare input pw to hashed pw
+  // const password = await bcrypt.compare(req.body.password, hashedPassword, (err, hash) => {
+  //   if (err) {
+  //     console.log('ERR ', err);
+  //   } else {
+  //     console.log('RES ', hash);
+  //   }
+  // })
 });
 
 router.post("/followUser", async (req, res) => {
