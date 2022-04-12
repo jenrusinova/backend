@@ -1,10 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
-const passport = require ('passport');
-const genPassword = require ('../../lib/passwordUtils.js').genPassword;
-const User = require('../../database/models/User');
-
 
 const {
   addNewUser,
@@ -43,7 +39,6 @@ router.get("/getUserMeta/:username", async (req, res) => {
 
 //input must be in form {username, email, password} -- returns username
 router.post("/addNewUser", async (req, res) => {
-
   const body = req.body;
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(body.password, salt);
@@ -52,8 +47,6 @@ router.post("/addNewUser", async (req, res) => {
     email: body.email,
     password: hashedPassword
   };
-
-  console.log('user', user);
 
   try {
     const newUser = await addNewUser(user);
@@ -75,12 +68,6 @@ router.post("/addNewUser", async (req, res) => {
   //   }
   // })
 });
-
-
-router.post('/login/password', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login'
-}));
 
 router.post("/followUser", async (req, res) => {
   try {
