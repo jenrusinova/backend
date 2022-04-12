@@ -3,7 +3,13 @@ const Post = require("../models/Post");
 //possibly add .lean() in the future
 
 const uploadPost = async (postData) => {
-  const post = new Post(postData);
+  const post = new Post({
+    username: postData.username,
+    profPhoto: postData.profPhoto,
+    location: postData.location,
+    url: postData.url,
+    caption: postData.caption
+  });
   const newPost = await post.save();
   return newPost;
 };

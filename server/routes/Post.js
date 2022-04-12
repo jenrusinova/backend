@@ -26,9 +26,11 @@ router.get("/discover", async (req, res) => {
 router.post("/uploadPost", async (req, res) => {
   try {
     const newPost = await uploadPost(req.body);
-    res.send(newPost.url);
+    // console.log('we have', newPost);
+    // res.send(newPost.url);
+    res.status(400).send("upload Pix successfully");
   } catch (err) {
-    res.send(err);
+    res.status(400).send(err.message);
   }
 });
 
