@@ -1,5 +1,9 @@
 const express = require("express");
 const app = express();
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 const { serverPort } = require("../constants");
 const mongoose = require ("mongoose");
 const session = require("express-session");
@@ -57,12 +61,17 @@ app.use(passport.session());
 app.use("/user", userRouter);
 app.use("/post", postRouter);
 
-
-
 app.get('/', (req, res, next) => {
   res.send('sessions');
 });
 
-app.listen(serverPort, () => {
+
+io.on("connection", (socket) => {
+  socket.on("chat message", (msg) => {
+    io.emit(`${msg.sender}${msg.receiver}`, msg);
+  });
+});
+
+server.listen(serverPort, () => {
   console.log(`listening on port ${serverPort}`);
 });
