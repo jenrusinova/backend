@@ -4,11 +4,11 @@ const Post = require("../models/Post");
 
 const uploadPost = async (postData) => {
   const post = new Post({
-    username: postData.username,
-    profPhoto: postData.profPhoto,
-    location: postData.location,
+    username: postData.username || null,
+    profPhoto: postData.profPhoto || null,
+    location: postData.location || null,
     url: postData.url,
-    caption: postData.caption
+    caption: postData.caption || null
   });
   const newPost = await post.save();
   return newPost;
