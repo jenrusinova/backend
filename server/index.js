@@ -23,7 +23,7 @@ const dbOptions = {
 //
 const connection = mongoose.createConnection(dbString, dbOptions);
 
-// app.use(express.json());
+ app.use(express.json());
 // app.use(express.urlencoded({extended: true}));
 // app.use(bodyParser.json());
 
