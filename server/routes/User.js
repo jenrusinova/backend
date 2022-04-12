@@ -53,6 +53,8 @@ router.post("/addNewUser", async (req, res) => {
     password: hashedPassword
   };
 
+  console.log('user', user);
+
   try {
     const newUser = await addNewUser(user);
     res.send(newUser.username);
@@ -74,9 +76,11 @@ router.post("/addNewUser", async (req, res) => {
   // })
 });
 
-router.post('/login', passport.authenticate('local'), async (req, res) => {
-  //TODO - implement login route
-})
+
+router.post('/login/password', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login'
+}));
 
 router.post("/followUser", async (req, res) => {
   try {
