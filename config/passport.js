@@ -1,41 +1,64 @@
 const passport = require ('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const connection = require ('../database/index.js');
-const User = connection.models.User;
+const User = require('../database/models/User.js');
 const validPassword = require ('../lib/passwordUtils.js').validPassword;
+const bcrypt = require('bcrypt');
 
 
-
-const customFields = {
-  usernameField: 'uname',
-  passwordFiels:'pw'
-};
-
-
-
-const verifyCallback = (username, password, done) => {
-  //username received from request body
+passport.use(new LocalStrategy(function verify(username, password, cb) {
+  console.log('username', username);
+  console.log('input password', password);
   User.findOne({username: username})
     .then((user) => {
       if (!user){
-        return done (null, false);
+        return cb (null, false);
       }
 
-      const isValid = validPassword(password, user.hash, user.salt);
+  console.log('user', user);
+  console.log('password from db', user.password);
+  bcrypt.compare(password, user.password, (err, res) => {
+    if (err) {
+      console.error(err);
+      console.log('login is not valid');
+      return cb (null, false);
+    }
+    else {
+      console.log('login is valid');
+      return cb(null, user);
+    }
+  })
+       })
+        .catch ((err) => {
+          cb (err);
+        });
+  }));
 
-      if (isValid){
-        return done (null, user);
-      } else {
-        return done (null, false);
-      }
-    })
-    .catch ((err) => {
-      done (err);
-    });
 
-};
 
-const strategy = new LocalStrategy(customFields, verifyCallback);
+
+// const verifyCallback = (username, password, done) => {
+//   //username received from request body
+//   console.log('passport line 18');
+//
+
+//       const isValid = validPassword(password, user.password);
+
+//       if (isValid){
+//         console.log('login is valid');
+//         return done (null, user);
+//       } else {
+//         console.log('login is not valid');
+//         return done (null, false);
+//       }
+//     })
+//     .catch ((err) => {
+//       done (err);
+//     });
+
+// };
+
+//const strategy = new LocalStrategy(customFields, verifyCallback);
 
 
 // passport.use(new LocalStrategy(
@@ -49,16 +72,16 @@ const strategy = new LocalStrategy(customFields, verifyCallback);
 //   }
 // ));
 
-passport.use(strategy);
+// passport.use(strategy);
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-})
+// passport.serializeUser((user, done) => {
+//   done(null, user.id);
+// })
 
-passport.deserializeUser((userId, done) => {
-  User.findById (userId)
-  .then((user) => {
-    done (null, user);
-  })
-  .catch(err => done (err));
-});
+// passport.deserializeUser((userId, done) => {
+//   User.findById (userId)
+//   .then((user) => {
+//     done (null, user);
+//   })
+//   .catch(err => done (err));
+// });
