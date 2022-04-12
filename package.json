@@ -11,7 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.3",
-    "mongoose": "^6.2.9"
+    "mongoose": "^6.2.9",
+    "nodeman": "^1.1.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
