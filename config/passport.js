@@ -12,20 +12,26 @@ passport.use(new LocalStrategy(function verify(username, password, cb) {
   User.findOne({username: username})
     .then((user) => {
       if (!user){
+        console.log('no such user');
         return cb (null, false);
       }
 
-  console.log('user', user);
+  console.log('received password', password);
   console.log('password from db', user.password);
   bcrypt.compare(password, user.password, (err, res) => {
     if (err) {
       console.error(err);
-      console.log('login is not valid');
+      console.log('password is not valid');
       return cb (null, false);
     }
     else {
-      console.log('login is valid');
+      if (res){
+      console.log('password is valid');
       return cb(null, user);
+      } else {
+        console.log('password is not valid');
+        return cb (null, false);
+      }
     }
   })
        })
