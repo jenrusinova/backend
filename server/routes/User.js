@@ -10,6 +10,8 @@ const {
   changeProfilePhoto,
 } = require("../../database/controllers/User");
 
+let { transporter, regConfirmation } = require('../../nodemailer');
+
 //GET REQUESTS
 
 //request parameteer must include username --- returns userInfo (user metadata and posts)
@@ -48,25 +50,39 @@ router.post("/addNewUser", async (req, res) => {
     password: hashedPassword
   };
 
-  try {
-    const newUser = await addNewUser(user);
-    res.send(newUser.username);
-  } catch (err) {
-    if (err.code === 11000) {
-      res.send("already a user");
-    } else {
-      res.send(err);
-    }
-  }
+  regConfirmation.to = user.email;
 
-  // compare input pw to hashed pw
-  // const password = await bcrypt.compare(req.body.password, hashedPassword, (err, hash) => {
-  //   if (err) {
-  //     console.log('ERR ', err);
+  console.log('REG ', regConfirmation)
+  transporter.sendMail(regConfirmation, (err, info) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Email sent: ', info.response);
+    }
+  })
+
+  // const body = req.body;
+  // const salt = await bcrypt.genSalt(10);
+  // const hashedPassword = await bcrypt.hash(body.password, salt);
+  // const user = {
+  //   username: body.username,
+  //   email: body.email,
+  //   password: hashedPassword
+  // };
+
+  // try {
+  //   const newUser = await addNewUser(user);
+
+  //   // send email
+
+  //   res.send(newUser.username);
+  // } catch (err) {
+  //   if (err.code === 11000) {
+  //     res.send("already a user");
   //   } else {
-  //     console.log('RES ', hash);
+  //     res.send(err);
   //   }
-  // })
+  // }
 });
 
 router.post("/followUser", async (req, res) => {
