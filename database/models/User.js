@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   profPhoto: String,
   following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
   followers: [],
+  active: {type: Boolean, default: false}
 });
 
 const User = mongoose.model("User", userSchema);
