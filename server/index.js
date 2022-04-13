@@ -37,7 +37,7 @@ const sessionStore = new MongoStore({
 });
 
 
-console.log(process.env.SECRET);
+
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
@@ -60,7 +60,7 @@ app.use("/post", postRouter);
 
 
 app.get('/', (req, res, next) => {
-  res.send('sessions');
+  res.send('<a class="button" href="/login/federated/google">Sign in with Google</a>');
 });
 
 app.listen(serverPort, () => {
