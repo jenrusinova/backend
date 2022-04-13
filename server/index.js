@@ -60,7 +60,7 @@ app.use("/post", postRouter);
 
 
 app.get('/', (req, res, next) => {
-  res.send('<a class="button" href="/login/federated/google">Sign in with Google</a>');
+  res.send('<a class="button" href="/user/login/federated/google">Sign in with Google</a>');
 });
 
 app.listen(serverPort, () => {

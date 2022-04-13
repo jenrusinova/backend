@@ -82,6 +82,13 @@ router.post('/login/password', passport.authenticate('local', {
   failureRedirect: '/login'
 }));
 
+//router.get('/login/federated/google', passport.authenticate('google'));
+router.get("/login/federated/google", async (req, res) => {
+ res.send('hello');
+});
+
+
+
 router.post("/followUser", async (req, res) => {
   try {
     const { currentUserID, otherID } = req.body;
