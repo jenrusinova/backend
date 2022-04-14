@@ -79,7 +79,7 @@ router.post("/followUser", async (req, res) => {
   }
 });
 
-router.post("/profPhoto", async (req, res) => {
+router.patch("/profPhoto", async (req, res) => {
   try {
     const user = await changeProfilePhoto(req.body)
     res.send(user);
