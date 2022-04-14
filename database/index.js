@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
-const { host, dbPort, database } = require("../constants");
-mongoose.connect(`mongodb://${host}:${dbPort}/${database}`);
+if (process.env.status === "production") {
+  console.log("production")
+  mongoose.connect(process.env.uri);
+} else {
+  mongoose.connect('mongodb://localhost:27017/petpics');
+}
 
 const db = mongoose.connection;
 
