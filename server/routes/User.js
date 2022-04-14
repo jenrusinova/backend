@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
@@ -8,9 +9,10 @@ const {
   followUser,
   getUserMeta,
   changeProfilePhoto,
+  validateUser
 } = require("../../database/controllers/User");
 
-let { transporter, regConfirmation } = require('../../nodemailer');
+const { transport } = require("../../nodemailer");
 
 //GET REQUESTS
 
@@ -37,6 +39,16 @@ router.get("/getUserMeta/:username", async (req, res) => {
   }
 });
 
+router.get("/validate/:userid", async (req, res) => {
+  try {
+    const id = req.params.userid;
+    const valid = await validateUser(id);
+    res.send('Account Successfully Validated!');
+  } catch (err) {
+    res.send(err);
+  }
+})
+
 //POST REQUESTS
 
 //input must be in form {username, email, password} -- returns username
@@ -50,39 +62,41 @@ router.post("/addNewUser", async (req, res) => {
     password: hashedPassword
   };
 
-  regConfirmation.to = user.email;
+  try {
+    const newUser = await addNewUser(user);
+    const validatedURL = `http://127.0.0.1:3000/user/validate/${newUser._id}`;
 
-  console.log('REG ', regConfirmation)
-  transporter.sendMail(regConfirmation, (err, info) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('Email sent: ', info.response);
+    let mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: newUser.email,
+      subject: 'PetPix Account Verification',
+      html: `
+        <div>
+          <p>Welcome to PetPix! Please verify your account.</p>
+          <button>${validatedURL}</button>
+        </div>
+      `
     }
-  })
 
-  // const body = req.body;
-  // const salt = await bcrypt.genSalt(10);
-  // const hashedPassword = await bcrypt.hash(body.password, salt);
-  // const user = {
-  //   username: body.username,
-  //   email: body.email,
-  //   password: hashedPassword
-  // };
+    transport.sendMail(mailOptions, (err, result) => {
+      if (err) {
+        res.send(err);
+      } else {
+        transport.close();
+        // res.send({
+        //   message: 'Email has been sent!'
+        // })
+      }
+    })
 
-  // try {
-  //   const newUser = await addNewUser(user);
-
-  //   // send email
-
-  //   res.send(newUser.username);
-  // } catch (err) {
-  //   if (err.code === 11000) {
-  //     res.send("already a user");
-  //   } else {
-  //     res.send(err);
-  //   }
-  // }
+    res.send(newUser.username);
+  } catch (err) {
+    if (err.code === 11000) {
+      res.send("already a user");
+    } else {
+      res.send(err);
+    }
+  }
 });
 
 router.post("/followUser", async (req, res) => {
