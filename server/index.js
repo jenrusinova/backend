@@ -62,6 +62,7 @@ app.use("/user", userRouter);
 app.use("/post", postRouter);
 
 app.get('/', (req, res, next) => {
+<<<<<<< HEAD
   res.send('<a class="button" href="/user/login/federated/google">Sign in with Google</a>');
 });
 
@@ -78,6 +79,18 @@ io.on("connection", (socket) => {
   });
 });
 
+=======
+  res.send('sessions');
+});
+
+
+io.on("connection", (socket) => {
+  socket.on("chat message", (msg) => {
+    io.emit(`${msg.sender}${msg.receiver}`, msg);
+  });
+});
+
+>>>>>>> 77d11b13cdd8ff9239bf8684d393023815cf0ac6
 server.listen(serverPort, () => {
   console.log(`listening on port ${serverPort}`);
 });
