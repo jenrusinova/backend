@@ -63,6 +63,12 @@ app.get('/', (req, res, next) => {
   res.send('<a class="button" href="/user/login/federated/google">Sign in with Google</a>');
 });
 
+
+app.get('/oauth2/redirect/google', passport.authenticate('google', {
+  successRedirect: '/test',
+  failureRedirect: '/login'
+}));
+
 app.listen(serverPort, () => {
   console.log(`listening on port ${serverPort}`);
 });
