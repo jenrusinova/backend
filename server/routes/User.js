@@ -83,9 +83,6 @@ router.post("/addNewUser", async (req, res) => {
         res.send(err);
       } else {
         transport.close();
-        // res.send({
-        //   message: 'Email has been sent!'
-        // })
       }
     })
 
