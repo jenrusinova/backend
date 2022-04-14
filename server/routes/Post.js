@@ -26,9 +26,9 @@ router.get("/discover", async (req, res) => {
 router.post("/uploadPost", async (req, res) => {
   try {
     const newPost = await uploadPost(req.body);
-    res.send(newPost.url);
+    res.status(200).json(newPost)
   } catch (err) {
-    res.send(err);
+    res.status(400).send(err.message);
   }
 });
 
