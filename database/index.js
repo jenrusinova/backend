@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-if (process.env.status === "production") {
+if (process.env.NODE_ENV === "production") {
   console.log("production")
   mongoose.connect(process.env.uri);
 } else {
