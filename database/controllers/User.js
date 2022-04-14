@@ -44,10 +44,17 @@ const followUser = async (currentUserID, otherID) => {
   });
 };
 
+const validateUser = async (currentUserID) => {
+  await User.findByIdAndUpdate(currentUserID, {
+    active: true
+  })
+}
+
 module.exports = {
   addNewUser,
   getUser,
   followUser,
   getUserMeta,
   changeProfilePhoto,
+  validateUser
 };
