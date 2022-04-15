@@ -1,6 +1,8 @@
-const passport = require ('passport');
+require("dotenv").config();
+const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 var GoogleStrategy = require('passport-google-oidc');
+const TwitterStrategy = require('passport-twitter').Strategy;
 const connection = require ('../database/index.js');
 const User = require('../database/models/User.js');
 const Credentials = require('../database/models/FederatedCredentials.js');
@@ -95,6 +97,18 @@ passport.use(new LocalStrategy(function verify(username, password, cb) {
       }
 
   ));
+
+passport.use(new TwitterStrategy({
+  consumerKey: process.env.TWITTER_CONSUMER_KEY,
+  consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+  callbackURL: 'http://127.0.0.1:3000/user/auth/twitter/callback'
+  },
+  function (token, tokenSecret, profile, cb) {
+    User.findOrCreate({ twitterId: profile.id }, function (err, user) {
+      return cb(err, user)
+    });
+  }
+));
 
 
 
