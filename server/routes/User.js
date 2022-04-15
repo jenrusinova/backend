@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
@@ -10,6 +11,8 @@ const {
   changeProfilePhoto,
   notification,
 } = require("../../database/controllers/User");
+
+const { transport } = require("../../nodemailer");
 
 //GET REQUESTS
 
@@ -36,6 +39,16 @@ router.get("/getUserMeta/:username", async (req, res) => {
   }
 });
 
+router.get("/validate/:userid", async (req, res) => {
+  try {
+    const id = req.params.userid;
+    const valid = await validateUser(id);
+    res.send('Account Successfully Validated!');
+  } catch (err) {
+    res.send(err);
+  }
+})
+
 //POST REQUESTS
 
 //input must be in form {username, email, password} -- returns username
@@ -51,6 +64,28 @@ router.post("/addNewUser", async (req, res) => {
 
   try {
     const newUser = await addNewUser(user);
+    const validatedURL = `http://127.0.0.1:3000/user/validate/${newUser._id}`;
+
+    let mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: newUser.email,
+      subject: 'PetPix Account Verification',
+      html: `
+        <div>
+          <p>Welcome to PetPix! Please verify your account.</p>
+          <button>${validatedURL}</button>
+        </div>
+      `
+    }
+
+    transport.sendMail(mailOptions, (err, result) => {
+      if (err) {
+        res.send(err);
+      } else {
+        transport.close();
+      }
+    })
+
     res.send(newUser.username);
   } catch (err) {
     if (err.code === 11000) {
@@ -59,15 +94,6 @@ router.post("/addNewUser", async (req, res) => {
       res.send(err);
     }
   }
-
-  // compare input pw to hashed pw
-  // const password = await bcrypt.compare(req.body.password, hashedPassword, (err, hash) => {
-  //   if (err) {
-  //     console.log('ERR ', err);
-  //   } else {
-  //     console.log('RES ', hash);
-  //   }
-  // })
 });
 
 router.post("/followUser", async (req, res) => {
