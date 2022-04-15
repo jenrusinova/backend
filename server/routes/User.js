@@ -53,15 +53,12 @@ router.get("/validate/:userid", async (req, res) => {
   }
 });
 
-router.get("/auth/twitter", passport.authenticate(
-  'twitter',
-  {scope: ['email']}
-));
+router.get("/auth/twitter", passport.authenticate('twitter'));
 
 router.use("/auth/twitter/callback",
   passport.authenticate('twitter', { failureRedirect: '/login' }),
   function(req, res) {
-    console.log('YOOOOOOOOO')
+    console.log('TWITTER AUTH SUCCESSFUL')
     res.redirect('/');
   }
 );
