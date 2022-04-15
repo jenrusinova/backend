@@ -2,6 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
+const passport = require ('passport');
+// const genPassword = require ('../../lib/passwordUtils.js').genPassword;
+const User = require('../../database/models/User');
+
 
 const {
   addNewUser,
@@ -9,7 +13,7 @@ const {
   followUser,
   getUserMeta,
   changeProfilePhoto,
-  validateUser
+  notification,
 } = require("../../database/controllers/User");
 
 const { transport } = require("../../nodemailer");
@@ -106,12 +110,40 @@ router.post("/followUser", async (req, res) => {
   }
 });
 
+router.post('/login/password', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login'
+}));
+
+router.get('/login/federated/google', passport.authenticate('google'));
+// router.get("/login/federated/google", async (req, res) => {
+//  res.send('hello');
+// });
+
+// router.get('/oauth2/redirect/google', passport.authenticate('google', {
+//   successRedirect: '/',
+//   failureRedirect: '/login'
+// }));
+
 router.patch("/profPhoto", async (req, res) => {
   try {
     const user = await changeProfilePhoto(req.body)
     res.send(user);
   } catch (err) {
     res.send(err);
+  }
+});
+
+//body must be in form {fromuser, touser, url} -- returns username
+router.post("/screenshot", async (req, res) => {
+  try {
+    const { fromuser, touser, url, caption } = req.body;
+    const newNotification = await notification(fromuser, touser, url, caption);
+    res.status(200).json(newNotification)
+    // console.log(newNotification)
+  } catch (err) {
+    res.status(400).send(err);
+    // console.log(err);
   }
 });
 

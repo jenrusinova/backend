@@ -1,6 +1,8 @@
 const User = require("../models/User");
+const Notification = require("../models/Notification");
 const mongoose = require("mongoose");
 const { getUserPosts } = require("./Post");
+
 
 //possibly add .lean() in the future
 
@@ -44,11 +46,22 @@ const followUser = async (currentUserID, otherID) => {
   });
 };
 
-const validateUser = async (currentUserID) => {
-  await User.findByIdAndUpdate(currentUserID, {
-    active: true
-  })
-}
+const notification = async (fromuser, touser, url, caption) => {
+  // console.log('all', fromuser, touser, url, caption);
+  const notificationInfo = new Notification({
+    fromuser: fromuser.toLowerCase(),
+    touser: touser.toLowerCase(),
+    url: url,
+    caption: caption || null,
+  });
+  await notificationInfo.save(function (err, data) {
+    if (err) {
+      console.log('err', err);
+    } else {
+      return data;
+    }
+  });
+};
 
 module.exports = {
   addNewUser,
@@ -56,5 +69,5 @@ module.exports = {
   followUser,
   getUserMeta,
   changeProfilePhoto,
-  validateUser
+  notification,
 };

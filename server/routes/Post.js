@@ -5,6 +5,7 @@ const {
   uploadPost,
   getDiscoveryPosts,
   commentOnPost,
+  notification,
 } = require("../../database/controllers/Post");
 
 //GET REQUESTS
@@ -28,7 +29,7 @@ router.post("/uploadPost", async (req, res) => {
     const newPost = await uploadPost(req.body);
     res.status(200).json(newPost)
   } catch (err) {
-    res.status(400).send(err.message);
+    res.status(400).send(err);
   }
 });
 
