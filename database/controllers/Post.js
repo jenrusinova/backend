@@ -33,4 +33,5 @@ const commentOnPost = async (photoID, username, comment) => {
   });
 };
 
-module.exports = { uploadPost, getUserPosts, getDiscoveryPosts, commentOnPost };
+
+module.exports = { uploadPost, getUserPosts, getDiscoveryPosts};

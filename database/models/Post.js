@@ -12,7 +12,7 @@ const postSchema = new mongoose.Schema(
       default: Date.now,
       expires: 24*60*60
     },
-    comments: []
+    comments: [],
   },
 );
 

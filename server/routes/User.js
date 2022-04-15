@@ -8,6 +8,7 @@ const {
   followUser,
   getUserMeta,
   changeProfilePhoto,
+  notification,
 } = require("../../database/controllers/User");
 
 //GET REQUESTS
@@ -85,6 +86,19 @@ router.patch("/profPhoto", async (req, res) => {
     res.send(user);
   } catch (err) {
     res.send(err);
+  }
+});
+
+//body must be in form {fromuser, touser, url} -- returns username
+router.post("/screenshot", async (req, res) => {
+  try {
+    const { fromuser, touser, url, caption } = req.body;
+    const newNotification = await notification(fromuser, touser, url, caption);
+    res.status(200).json(newNotification)
+    // console.log(newNotification)
+  } catch (err) {
+    res.status(400).send(err);
+    // console.log(err);
   }
 });
 
