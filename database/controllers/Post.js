@@ -3,7 +3,13 @@ const Post = require("../models/Post");
 //possibly add .lean() in the future
 
 const uploadPost = async (postData) => {
-  const post = new Post(postData);
+  const post = new Post({
+    username: postData.username || null,
+    profPhoto: postData.profPhoto || null,
+    location: postData.location || null,
+    url: postData.url,
+    caption: postData.caption || null
+  });
   const newPost = await post.save();
   return newPost;
 };
@@ -27,4 +33,5 @@ const commentOnPost = async (photoID, username, comment) => {
   });
 };
 
-module.exports = { uploadPost, getUserPosts, getDiscoveryPosts, commentOnPost };
+
+module.exports = { uploadPost, getUserPosts, getDiscoveryPosts};
