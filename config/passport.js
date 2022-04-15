@@ -104,6 +104,7 @@ passport.use(new TwitterStrategy({
   callbackURL: 'http://127.0.0.1:3000/user/auth/twitter/callback'
   },
   function (token, tokenSecret, profile, cb) {
+    console.log('TEST ', profile)
     User.findOrCreate({ twitterId: profile.id }, function (err, user) {
       return cb(err, user)
     });

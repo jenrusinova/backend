@@ -53,6 +53,21 @@ router.get("/validate/:userid", async (req, res) => {
   }
 })
 
+router.get("/auth/twitter", passport.authenticate('twitter'));
+
+// router.get("/auth/twitter/callback",
+//   passport.authenticate('twitter', { failureRedirect: '/login' }),
+//   function(req, res) {
+//     console.log('YOOOOOOOOO')
+//     res.redirect('/');
+//   }
+// )
+
+router.get("/auth/twitter/callback", (req, res) => {
+  console.log('REQ');
+  res.send('SUCCESS');
+})
+
 //POST REQUESTS
 
 //input must be in form {username, email, password} -- returns username
