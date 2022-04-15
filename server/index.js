@@ -40,9 +40,6 @@ const sessionStore = new MongoStore({
   collection: 'sessions'
 });
 
-app.use("/user", userRouter);
-app.use("/post", postRouter);
-
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
@@ -53,9 +50,8 @@ app.use(session({
   }
 }))
 
-app.use (passport.initialize());
+app.use(passport.initialize());
 app.use(passport.session());
-
 app.use("/user", userRouter);
 app.use("/post", postRouter);
 
