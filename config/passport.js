@@ -45,63 +45,63 @@ passport.use(new LocalStrategy(function verify(username, password, cb) {
   }));
 
 
-  passport.use(new GoogleStrategy({
-    clientID: process.env['GOOGLE_CLIENT_ID'],
-    clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
-    callbackURL: '/oauth2/redirect/google',
-    //scope: [ 'profile' ]
-    scope: [
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email'
+passport.use(new GoogleStrategy({
+  clientID: process.env['GOOGLE_CLIENT_ID'],
+  clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
+  callbackURL: '/oauth2/redirect/google',
+  //scope: [ 'profile' ]
+  scope: [
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/userinfo.email'
   ]
-  },
-  function(issuer, profile, cb) {
+},
+  function (issuer, profile, cb) {
 
     //take data with profile.id and provider
-    Credentials.findOne({provider: issuer, subject: profile.id} )
-    .then((user) => {
-      //if no data is found
-      if (!user){
-        //console.log('passport line 58');
-        //console.log('profile', profile);
-        //add this user to a user table
-      let newUser = new User({
-        username: profile.displayName.toLowerCase(),
-        email: profile.emails[0].value
-      })
-      newUser.save();
+    Credentials.findOne({ provider: issuer, subject: profile.id })
+      .then((user) => {
+        //if no data is found
+        if (!user) {
+          //console.log('passport line 58');
+          //console.log('profile', profile);
+          //add this user to a user table
+          let newUser = new User({
+            username: profile.displayName.toLowerCase(),
+            email: profile.emails[0].value
+          })
+          newUser.save();
 
 
-        //add new credentials
-        //add username instead of user id
-        let newCredentials = new Credentials({
-          user_id: profile.displayName.toLowerCase(),
-          provider: issuer,
-          subject: profile.id
-        });
-        newCredentials.save();
-        return cb(null, newUser);
-      } //if user is exists
+          //add new credentials
+          //add username instead of user id
+          let newCredentials = new Credentials({
+            user_id: profile.displayName.toLowerCase(),
+            provider: issuer,
+            subject: profile.id
+          });
+          newCredentials.save();
+          return cb(null, newUser);
+        } //if user is exists
         //return this user
         //console.log('passport line 74');
-        User.findOne({username: profile.displayName}).
-        then((user) => {
-          //console.log('found user', user);
-          return cb(null, user);
-        })
+        User.findOne({ username: profile.displayName }).
+          then((user) => {
+            //console.log('found user', user);
+            return cb(null, user);
+          })
 
-       })
-        .catch ((err) => {
-          cb (err);
-        });
-      }
-
-  ));
+      })
+      .catch((err) => {
+        cb(err);
+      });
+  }
+));
 
 passport.use(new TwitterStrategy({
   consumerKey: process.env.TWITTER_CONSUMER_KEY,
   consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-  callbackURL: 'http://127.0.0.1:3000/user/auth/twitter/callback'
+  callbackURL: 'http://localhost:3000/user/auth/twitter/callback',
+  userProfileURL: 'https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true',
   },
   function (token, tokenSecret, profile, cb) {
     console.log('TEST ', profile)

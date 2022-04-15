@@ -51,22 +51,29 @@ router.get("/validate/:userid", async (req, res) => {
   } catch (err) {
     res.send(err);
   }
-})
+});
 
-router.get("/auth/twitter", passport.authenticate('twitter'));
+router.get("/auth/twitter", passport.authenticate(
+  'twitter',
+  {scope: ['email']}
+));
 
-// router.get("/auth/twitter/callback",
-//   passport.authenticate('twitter', { failureRedirect: '/login' }),
-//   function(req, res) {
-//     console.log('YOOOOOOOOO')
-//     res.redirect('/');
-//   }
-// )
+router.use("/auth/twitter/callback",
+  passport.authenticate('twitter', { failureRedirect: '/login' }),
+  function(req, res) {
+    console.log('YOOOOOOOOO')
+    res.redirect('/');
+  }
+);
 
-router.get("/auth/twitter/callback", (req, res) => {
-  console.log('REQ');
-  res.send('SUCCESS');
-})
+router.get("/auth/twitter/terms", (req, res) => {
+  res.send('Terms of service and privacy policy here');
+});
+
+// router.get("/auth/twitter/callback", (req, res) => {
+//   console.log('REQ');
+//   res.send('SUCCESS');
+// })
 
 //POST REQUESTS
 
