@@ -96,6 +96,24 @@ router.post("/addNewUser", async (req, res) => {
   }
 });
 
+
+router.post('/login/password', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login'
+}));
+
+router.get('/login/federated/google', passport.authenticate('google'));
+// router.get("/login/federated/google", async (req, res) => {
+//  res.send('hello');
+// });
+
+// router.get('/oauth2/redirect/google', passport.authenticate('google', {
+//   successRedirect: '/',
+//   failureRedirect: '/login'
+// }));
+
+
+
 router.post("/followUser", async (req, res) => {
   try {
     const { currentUserID, otherID } = req.body;
