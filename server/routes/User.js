@@ -67,13 +67,9 @@ router.use("/auth/twitter/callback",
 );
 
 router.get("/auth/twitter/terms", (req, res) => {
+  // required in order to get twitter user emails
   res.send('Terms of service and privacy policy here');
 });
-
-// router.get("/auth/twitter/callback", (req, res) => {
-//   console.log('REQ');
-//   res.send('SUCCESS');
-// })
 
 //POST REQUESTS
 
