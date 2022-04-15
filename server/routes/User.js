@@ -2,6 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
+const passport = require ('passport');
+// const genPassword = require ('../../lib/passwordUtils.js').genPassword;
+const User = require('../../database/models/User');
+
 
 const {
   addNewUser,
@@ -105,6 +109,21 @@ router.post("/followUser", async (req, res) => {
     res.send(err);
   }
 });
+
+router.post('/login/password', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login'
+}));
+
+router.get('/login/federated/google', passport.authenticate('google'));
+// router.get("/login/federated/google", async (req, res) => {
+//  res.send('hello');
+// });
+
+// router.get('/oauth2/redirect/google', passport.authenticate('google', {
+//   successRedirect: '/',
+//   failureRedirect: '/login'
+// }));
 
 router.patch("/profPhoto", async (req, res) => {
   try {
