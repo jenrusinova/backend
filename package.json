@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./server"
+    "start": "nodemon ./server",
+    "test": "echo 'no tests yet'"
   },
   "keywords": [],
   "author": "",
