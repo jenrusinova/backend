@@ -1,8 +1,8 @@
 require("dotenv").config();
 const express = require("express");
+const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
-const passport = require ('passport');
 // const genPassword = require ('../../lib/passwordUtils.js').genPassword;
 const User = require('../../database/models/User');
 
@@ -100,7 +100,7 @@ router.post("/addNewUser", async (req, res) => {
 
     transport.sendMail(mailOptions, (err, result) => {
       if (err) {
-        res.send(err);
+        // res.send(err);
       } else {
         transport.close();
       }
