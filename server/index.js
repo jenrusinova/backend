@@ -50,6 +50,13 @@ app.use(session({
   }
 }))
 
+app.use("/user", userRouter);
+app.use("/post", postRouter);
+app.post('/random', (req, res) => {
+  console.log('got random');
+  res.sendStatus(200);
+})
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/user", userRouter);
@@ -59,9 +66,9 @@ app.get('/', (req, res, next) => {
   res.send('<a class="button" href="/user/login/federated/google">Sign in with Google</a>');
 });
 
-
 app.get('/oauth2/redirect/google', passport.authenticate('google', {
-  successRedirect: 'exp://10.0.0.251:19000',
+  // successRedirect: 'exp://10.0.0.251:19000',
+  successRedirect: '/success',
   failureRedirect: '/login'
 }));
 
