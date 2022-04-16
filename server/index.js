@@ -65,6 +65,10 @@ app.get('/oauth2/redirect/google', passport.authenticate('google', {
   failureRedirect: '/login'
 }));
 
+app.get('/login', (req, res) => {
+  console.log('REQ ', req);
+  res.send("FAILED")
+})
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
