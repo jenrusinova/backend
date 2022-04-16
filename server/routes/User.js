@@ -58,8 +58,9 @@ router.get("/auth/twitter", passport.authenticate('twitter'));
 router.use("/auth/twitter/callback",
   passport.authenticate('twitter', { failureRedirect: '/login' }),
   function(req, res) {
-    console.log('TWITTER AUTH SUCCESSFUL')
-    res.redirect('/');
+    let username = req.user.username;
+    let email = req.user.email;
+    res.redirect(`exp://10.0.0.251:19000/?username=${username}&email=${email}`);
   }
 );
 
