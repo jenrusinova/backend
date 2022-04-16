@@ -53,6 +53,11 @@ app.use(session({
 
 app.use("/user", userRouter);
 app.use("/post", postRouter);
+app.post('/random', (req, res) => {
+  console.log('got random');
+  res.sendStatus(200);
+})
+
 
 
 
@@ -68,7 +73,7 @@ app.get('/', (req, res, next) => {
 
 
 app.get('/oauth2/redirect/google', passport.authenticate('google', {
-  successRedirect: '/test',
+  successRedirect: '/success',
   failureRedirect: '/login'
 }));
 
