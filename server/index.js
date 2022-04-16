@@ -40,9 +40,6 @@ const sessionStore = new MongoStore({
   collection: 'sessions'
 });
 
-app.use("/user", userRouter);
-app.use("/post", postRouter);
-
 app.use(session({
   secret: process.env.SECRET,
   resave: false,
@@ -52,6 +49,17 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 //equals 1 day
   }
 }))
+
+
+app.use("/user", userRouter);
+app.use("/post", postRouter);
+app.post('/random', (req, res) => {
+  console.log('got random');
+  res.sendStatus(200);
+})
+
+
+
 
 app.use (passport.initialize());
 app.use(passport.session());
@@ -65,7 +73,7 @@ app.get('/', (req, res, next) => {
 
 
 app.get('/oauth2/redirect/google', passport.authenticate('google', {
-  successRedirect: '/test',
+  successRedirect: '/success',
   failureRedirect: '/login'
 }));
 
