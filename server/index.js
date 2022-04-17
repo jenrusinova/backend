@@ -16,7 +16,7 @@ require ('../config/passport');
 const db = require("../database");
 
 require ('../config/passport');
-app.use (passport.initialize());
+app.use(passport.initialize());
 
 const MongoStore = require ('connect-mongo')(session);
 
@@ -50,6 +50,7 @@ app.use(session({
   }
 }))
 
+
 app.use("/user", userRouter);
 app.use("/post", postRouter);
 app.post('/random', (req, res) => {
@@ -57,8 +58,9 @@ app.post('/random', (req, res) => {
   res.sendStatus(200);
 })
 
-app.use(passport.initialize());
+app.use (passport.initialize());
 app.use(passport.session());
+
 app.use("/user", userRouter);
 app.use("/post", postRouter);
 
@@ -66,15 +68,28 @@ app.get('/', (req, res, next) => {
   res.send('<a class="button" href="/user/login/federated/google">Sign in with Google</a>');
 });
 
-app.get('/oauth2/redirect/google', passport.authenticate('google', {
-  // successRedirect: 'exp://10.0.0.251:19000',
-  successRedirect: '/success',
-  failureRedirect: '/login'
-}));
+// app.get('/oauth2/redirect/google', passport.authenticate('google', {
+//   // successRedirect: 'exp://10.0.0.251:19000',
+//   successRedirect: '/success',
+//   failureRedirect: '/login'
+// }));
+
+app.get('/oauth2/redirect/google',
+  passport.authenticate('google', {
+    failureRedirect: '/login'
+  }),
+  function(req, res) {
+    res.redirect('/success')
+  })
 
 app.get('/login', (req, res) => {
   console.log('REQ ', req);
   res.send("FAILED")
+})
+
+app.get('/success', (req, res) => {
+  console.log('PLS');
+  res.send('SUCCESS')
 })
 
 io.on("connection", (socket) => {
