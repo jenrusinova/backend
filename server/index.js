@@ -20,13 +20,15 @@ app.use(passport.initialize());
 
 const MongoStore = require ('connect-mongo')(session);
 
+
 const dbString = 'mongodb://localhost:27017/sessions';
 const dbOptions = {
   useNewUrlParser: true,
   useUnifiedTopology:true
 }
-
+//
 const connection = mongoose.createConnection(dbString, dbOptions);
+
 
 app.use(express.json());
 
@@ -66,9 +68,17 @@ app.get('/', (req, res, next) => {
 });
 
 app.get('/oauth2/redirect/google', passport.authenticate('google', {
-  successRedirect: '/user/google/success',
-  failureRedirect: '/user/login'
+  successRedirect: '/success',
+  failureRedirect: '/login'
 }));
+
+app.get('/login', (req, res) => {
+  res.redirect("exp://10.0.0.251:19000?status=failed");
+})
+
+app.get('/success', (req, res) => {
+  res.redirect(`exp://10.0.0.251:19000?username=${req.user}`);
+})
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {

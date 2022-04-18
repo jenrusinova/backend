@@ -71,14 +71,6 @@ router.get("/auth/twitter/terms", (req, res) => {
 
 router.get('/login/federated/google', passport.authenticate('google'));
 
-router.get('/login', (req, res) => {
-  res.redirect("exp://10.0.0.251:19000?status=failed")
-})
-
-router.get('/google/success', (req, res) => {
-  res.redirect(`exp://10.0.0.251:19000?username=${req.user}`);
-})
-
 //POST REQUESTS
 
 //input must be in form {username, email, password} -- returns username
