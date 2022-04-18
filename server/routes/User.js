@@ -76,8 +76,7 @@ router.get('/login', (req, res) => {
 })
 
 router.get('/google/success', (req, res) => {
-  console.log('PLS ', req.user);
-  res.redirect('exp://10.0.0.251:19000')
+  res.redirect(`exp://10.0.0.251:19000?username=${req.user}`);
 })
 
 //POST REQUESTS
