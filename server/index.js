@@ -20,15 +20,13 @@ app.use(passport.initialize());
 
 const MongoStore = require ('connect-mongo')(session);
 
-
 const dbString = 'mongodb://localhost:27017/sessions';
 const dbOptions = {
   useNewUrlParser: true,
   useUnifiedTopology:true
 }
-//
-const connection = mongoose.createConnection(dbString, dbOptions);
 
+const connection = mongoose.createConnection(dbString, dbOptions);
 
 app.use(express.json());
 
@@ -50,7 +48,6 @@ app.use(session({
   }
 }))
 
-
 app.use("/user", userRouter);
 app.use("/post", postRouter);
 app.post('/random', (req, res) => {
@@ -68,29 +65,10 @@ app.get('/', (req, res, next) => {
   res.send('<a class="button" href="/user/login/federated/google">Sign in with Google</a>');
 });
 
-// app.get('/oauth2/redirect/google', passport.authenticate('google', {
-//   // successRedirect: 'exp://10.0.0.251:19000',
-//   successRedirect: '/success',
-//   failureRedirect: '/login'
-// }));
-
-app.get('/oauth2/redirect/google',
-  passport.authenticate('google', {
-    failureRedirect: '/login'
-  }),
-  function(req, res) {
-    res.redirect('/success')
-  })
-
-app.get('/login', (req, res) => {
-  console.log('REQ ', req);
-  res.send("FAILED")
-})
-
-app.get('/success', (req, res) => {
-  console.log('PLS');
-  res.send('SUCCESS')
-})
+app.get('/oauth2/redirect/google', passport.authenticate('google', {
+  successRedirect: '/user/google/success',
+  failureRedirect: '/user/login'
+}));
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {

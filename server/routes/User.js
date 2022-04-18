@@ -69,6 +69,17 @@ router.get("/auth/twitter/terms", (req, res) => {
   res.send('Terms of service and privacy policy here');
 });
 
+router.get('/login/federated/google', passport.authenticate('google'));
+
+router.get('/login', (req, res) => {
+  res.redirect("exp://10.0.0.251:19000?status=failed")
+})
+
+router.get('/google/success', (req, res) => {
+  console.log('PLS ', req.user);
+  res.redirect('exp://10.0.0.251:19000')
+})
+
 //POST REQUESTS
 
 //input must be in form {username, email, password} -- returns username
@@ -130,16 +141,6 @@ router.post('/login/password', passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login'
 }));
-
-router.get('/login/federated/google', passport.authenticate('google'));
-// router.get("/login/federated/google", async (req, res) => {
-//  res.send('hello');
-// });
-
-// router.get('/oauth2/redirect/google', passport.authenticate('google', {
-//   successRedirect: '/',
-//   failureRedirect: '/login'
-// }));
 
 router.patch("/profPhoto", async (req, res) => {
   try {
