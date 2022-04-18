@@ -1,8 +1,8 @@
 require("dotenv").config();
 const express = require("express");
+const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
-const passport = require ('passport');
 // const genPassword = require ('../../lib/passwordUtils.js').genPassword;
 const User = require('../../database/models/User');
 
@@ -51,7 +51,25 @@ router.get("/validate/:userid", async (req, res) => {
   } catch (err) {
     res.send(err);
   }
-})
+});
+
+router.get("/auth/twitter", passport.authenticate('twitter'));
+
+router.use("/auth/twitter/callback",
+  passport.authenticate('twitter', { failureRedirect: '/login' }),
+  function(req, res) {
+    let username = req.user.username;
+    let email = req.user.email;
+    res.redirect(`exp://10.0.0.251:19000/?username=${username}&email=${email}`);
+  }
+);
+
+router.get("/auth/twitter/terms", (req, res) => {
+  // required in order to get twitter user emails
+  res.send('Terms of service and privacy policy here');
+});
+
+router.get('/login/federated/google', passport.authenticate('google'));
 
 //POST REQUESTS
 
@@ -114,16 +132,6 @@ router.post('/login/password', passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login'
 }));
-
-router.get('/login/federated/google', passport.authenticate('google'));
-// router.get("/login/federated/google", async (req, res) => {
-//  res.send('hello');
-// });
-
-// router.get('/oauth2/redirect/google', passport.authenticate('google', {
-//   successRedirect: '/',
-//   failureRedirect: '/login'
-// }));
 
 router.patch("/profPhoto", async (req, res) => {
   try {

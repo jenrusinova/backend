@@ -16,7 +16,7 @@ require ('../config/passport');
 const db = require("../database");
 
 require ('../config/passport');
-app.use (passport.initialize());
+app.use(passport.initialize());
 
 const MongoStore = require ('connect-mongo')(session);
 
@@ -50,16 +50,12 @@ app.use(session({
   }
 }))
 
-
 app.use("/user", userRouter);
 app.use("/post", postRouter);
 app.post('/random', (req, res) => {
   console.log('got random');
   res.sendStatus(200);
 })
-
-
-
 
 app.use (passport.initialize());
 app.use(passport.session());
@@ -71,12 +67,18 @@ app.get('/', (req, res, next) => {
   res.send('<a class="button" href="/user/login/federated/google">Sign in with Google</a>');
 });
 
-
 app.get('/oauth2/redirect/google', passport.authenticate('google', {
   successRedirect: '/success',
   failureRedirect: '/login'
 }));
 
+app.get('/login', (req, res) => {
+  res.redirect("exp://10.0.0.251:19000?status=failed");
+})
+
+app.get('/success', (req, res) => {
+  res.redirect(`exp://10.0.0.251:19000?username=${req.user}`);
+})
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
